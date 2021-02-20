@@ -111,7 +111,7 @@ def index():
       'title' : 'Pocket Money Tracker',
       'time': dateString,
       'child': 'William',
-      'balance': bal
+      'balance': "{:,.2f}".format(bal)
       }
    return render_template('index.html', **templateData)
 
