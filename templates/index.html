@@ -11,13 +11,21 @@
      
       <br>
 
-      <h1>{{ child }} </h1>
-      <h2>Balance: £{{ balance }} </h2>
+        {% for row in rows %}
+           <hr>
+           <br>
+           <h1>{{row["child"]}}</h1> 
+           <h2>Current Balance: <b>£{{row["balance"]}}</b></h2>
+           <h3><a href = "\add\{{row["child"]}}">Add A New Transaction for {{row["child"]}} </a></h3>
+           <h3><a href = "\history\{{row["child"]}}">Transaction History for {{row["child"]}} </a></h3>
+           <br> 
+         {% endfor %}
 
       <br>
 
-      <h2><a href = "\add">Add A Transaction</h2>
-      <h2><a href = "\history">History</h2>
+      <hr>
+      <h3><a href = "\addChild">Add Another Child</h3>
+      
 
    </body>
 </html>

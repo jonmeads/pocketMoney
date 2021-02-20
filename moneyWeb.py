@@ -33,18 +33,19 @@ def requires_auth(f):
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/history')
-def list():
-   rows = db.getHistory(); 
+@app.route('/history/<child>')
+def history(child):
+   rows = db.getHistory(child); 
    return render_template("history.html",rows = rows)
 
 
-@app.route('/add')
+@app.route('/add/<child>')
 @requires_auth
-def add():
+def add(child):
    now = datetime.datetime.now()
    dateString = now.strftime("%Y-%m-%d")
    templateData = {
+       'child': child,
        'dt':dateString
    }
    return render_template('add.html', **templateData)
@@ -54,11 +55,12 @@ def add():
 def addRec():
    if request.method == 'POST':
       try:
+         child = request.form['child']
          dt = request.form['dt']
          amt = request.form['amt']
          desc = request.form['desc']
          
-         db.addData(dt, amt, desc)   
+         db.addData(child, dt, amt, desc)   
          msg = "successfully added transaction"
       except:
          msg = "error adding transaction"
@@ -66,19 +68,46 @@ def addRec():
       finally:
          return render_template("result.html",msg = msg)
   
+@app.route('/addChildRec', methods = ['POST', 'GET'])
+def addChildRec():
+   if request.method == 'POST':
+      try:
+         child = request.form['child']
+         amt = request.form['amt']
+
+         if amt is None:
+             amt = 0
+
+         now = datetime.datetime.now()
+         dt = now.strftime("%Y-%m-%d")
+
+         db.addChild(child, amt, dt)   
+         msg = "successfully added child"
+      except Exception as e: 
+         print(e)
+         msg = "error adding child"
+      
+      finally:
+         return render_template("result.html",msg = msg)
+  
+
+@app.route('/addChild')
+def addChild(): 
+   now = datetime.datetime.now()
+   dateString = now.strftime("%Y-%m-%d")
+   return render_template('addchild.html', title = 'Pocket Money Tracker', time = dateString)
+
 
 @app.route("/")
 def index():
    now = datetime.datetime.now()
    dateString = now.strftime("%Y-%m-%d")
-   bal = db.getBalance()
-   templateData = {
-      'title' : 'Pocket Money Tracker',
-      'time': dateString,
-      'child': 'William',
-      'balance': "{:,.2f}".format(bal)
-      }
-   return render_template('index.html', **templateData)
+   rows = db.getBalances()
+
+   if len(rows) == 0:
+       return render_template('addchild.html', title = 'Pocket Money Tracker', time = dateString)
+   else:
+       return render_template('index.html', rows = rows, title = 'Pocket Money Tracker', time = dateString)
 
 
 

@@ -1,0 +1,24 @@
+<html>
+   <head>
+      <h1>Add a child</h1>
+      <link rel="shortcut icon" href="{{ url_for('static', filename='../favicon.ico') }}">
+      <link rel="stylesheet" href="../static/style.css/">
+   </head>
+   <body>
+
+      <h1>Welcome to {{ title }}</h1>
+      <p>Please add a child</p>
+      
+      <form action = "{{ url_for('addChildRec') }}" method = "POST">
+         Childs Name<br>
+         <input type = "text" name = "child" /><br>
+         
+         Starting Amount<br>
+         <input type = "number" name = "amt" /></br>
+         
+         <input type = "submit" value = "submit" /><br>
+      </form>
+       <br>
+      <h2><a href = "\">Go back to home page</a></h2>     
+   </body>
+</html>

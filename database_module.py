@@ -5,46 +5,50 @@ from sqlite3 import Error
 
 dbfile = 'db/money.db'
 
-createsql ='''CREATE TABLE IF NOT EXISTS money(
-   date TEXT,
-   amount numeric ,
-   description TEST
-)'''
-
 
 def createdbIfNotExists():
    print("Checking Table created..")
    conn = sqlite3.connect(dbfile)
    cursor = conn.cursor()
-   cursor.execute(createsql)
+   cursor.execute("create table if not exists money(child text, date text, amount numeric, description text)")
+   cursor.execute("create table if not exists child(name text)")
+   cursor.execute("create table if not exists schedule(child text, amount numeric, frequency text, day text)")
    conn.commit()
    cursor.close()
 
 
-def addData(dt, amt, desc):
+def addData(child, dt, amt, desc):
    print("adding data..")
    conn = sqlite3.connect(dbfile)
    cursor = conn.cursor()
-   cursor.execute("insert into money (date, amount, description) values (?,?,?)", (dt, amt, desc))
+   cursor.execute("insert into money (child, date, amount, description) values (?, ?,?,?)", (child, dt, amt, desc))
    conn.commit()
    cursor.close()
     
-
-def getBalance():
+def addChild(child, amt, dt):
+   print("adding child..")
    conn = sqlite3.connect(dbfile)
    cursor = conn.cursor()
-   cursor.execute("select sum(amount) from money")
-   balanceRecord = cursor.fetchone()
-   print("balance: ", balanceRecord)
-   return balanceRecord[0]
+   cursor.execute("insert into child (name) values (?)", ([child]));
+   conn.commit()
    cursor.close()
+   addData(child, dt, amt, "Seeding Amount")
 
 
-def getHistory():
+def getBalances():
    conn = sqlite3.connect(dbfile)
    conn.row_factory = sqlite3.Row
    cursor = conn.cursor()
-   cursor.execute("select * from money ORDER BY date(date) DESC")
+   cursor.execute("select child, sum(amount) AS balance from money group by child order by child")
+   rows = cursor.fetchall();
+   cursor.close()
+   return rows 
+
+def getHistory(child):
+   conn = sqlite3.connect(dbfile)
+   conn.row_factory = sqlite3.Row
+   cursor = conn.cursor()
+   cursor.execute("select * from money where child = ? ORDER BY date(date) DESC", ([child]))
    rows = cursor.fetchall();
    cursor.close()
    return rows 
