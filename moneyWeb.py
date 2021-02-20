@@ -1,46 +1,12 @@
-from flask import Flask, render_template, request, Response
+import os
+from flask import Flask, render_template, request, Response, send_from_directory
 from functools import wraps 
 import datetime
-import sqlite3
-from sqlite3 import Error
+
+import database_module as db
 
 app = Flask(__name__)
 
-dbfile = 'db/money.db'
-
-createsql ='''CREATE TABLE IF NOT EXISTS money(
-   date TEXT,
-   amount numeric ,
-   description TEST
-)'''
-
-
-def addData(dt, amt, desc):
-   print("adding data..")
-   conn = sqlite3.connect(dbfile)
-   cursor = conn.cursor()
-   cursor.execute("insert into money (date, amount, description) values (?,?,?)", (dt, amt, desc))
-   conn.commit()
-   cursor.close()
-    
-
-def createdb(): 
-   print("Checking Table created..")
-   conn = sqlite3.connect(dbfile)
-   cursor = conn.cursor()
-   cursor.execute(createsql)
-   conn.commit()
-   cursor.close()
-
-
-def getBalance():
-   conn = sqlite3.connect(dbfile)
-   cursor = conn.cursor()
-   cursor.execute("select sum(amount) from money")
-   balanceRecord = cursor.fetchone()
-   print("balance: ", balanceRecord)
-   return balanceRecord[0]
-   cursor.close()
 
 
 def check_auth(username, password):
@@ -63,14 +29,13 @@ def requires_auth(f):
     return decorated
 
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 @app.route('/history')
 def list():
-   conn = sqlite3.connect(dbfile)
-   conn.row_factory = sqlite3.Row
-   cursor = conn.cursor()
-   cursor.execute("select * from money ORDER BY date(date) DESC")
-   rows = cursor.fetchall(); 
-   cursor.close()
+   rows = db.getHistory(); 
    return render_template("history.html",rows = rows)
 
 
@@ -93,7 +58,7 @@ def addRec():
          amt = request.form['amt']
          desc = request.form['desc']
          
-         addData(dt, amt, desc)   
+         db.addData(dt, amt, desc)   
          msg = "successfully added transaction"
       except:
          msg = "error adding transaction"
@@ -106,7 +71,7 @@ def addRec():
 def index():
    now = datetime.datetime.now()
    dateString = now.strftime("%Y-%m-%d")
-   bal = getBalance()
+   bal = db.getBalance()
    templateData = {
       'title' : 'Pocket Money Tracker',
       'time': dateString,
@@ -119,7 +84,7 @@ def index():
 
 def main():
    # create db if not exists
-   createdb()
+   db.createdbIfNotExists()
    app.run(host='0.0.0.0', port=8080, debug=True)
 
 
