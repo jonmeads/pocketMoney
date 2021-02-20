@@ -50,6 +50,21 @@ def add(child):
    }
    return render_template('add.html', **templateData)
 
+@app.route('/deleteAmount/<child>/<rowid>')
+@requires_auth
+def deleteAmount(child, rowid):
+  try:
+     print("Deleting record")
+     db.deleteAmount(child, rowid)   
+     msg = "successfully deleted record"
+  except Exception as e: 
+     print(e)
+     msg = "error deleting record"
+  finally:
+     return render_template("result.html",msg = msg)
+  
+
+
 
 @app.route('/addRec', methods = ['POST', 'GET'])
 def addRec():

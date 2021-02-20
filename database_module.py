@@ -35,6 +35,15 @@ def addChild(child, amt, dt):
    addData(child, dt, amt, "Seeding Amount")
 
 
+def deleteAmount(child, rowid):
+   print("deleting amount record..")
+   conn = sqlite3.connect(dbfile)
+   cursor = conn.cursor()
+   cursor.execute("delete from money where child = ? and rowid = ?", (child, rowid))
+   conn.commit()
+   cursor.close()
+   
+
 def getBalances():
    conn = sqlite3.connect(dbfile)
    conn.row_factory = sqlite3.Row
@@ -48,7 +57,7 @@ def getHistory(child):
    conn = sqlite3.connect(dbfile)
    conn.row_factory = sqlite3.Row
    cursor = conn.cursor()
-   cursor.execute("select * from money where child = ? ORDER BY date(date) DESC", ([child]))
+   cursor.execute("select rowid, * from money where child = ? ORDER BY date(date) DESC", ([child]))
    rows = cursor.fetchall();
    cursor.close()
    return rows 
