@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+   <head>
+     <h1>History</h1>
+      <link rel="stylesheet" href="../static/style.css/">
+   </head>
+   <body>
+   
+      <table border = 1>
+         <thead>
+            <td>Date</td>
+            <td>Amount</td>
+            <td>Description</td>
+         </thead>
+         
+         {% for row in rows %}
+            <tr>
+               <td>{{row["date"]}}</td>
+               <td>{{row["amount"]}}</td>
+               <td>{{row["description"]}}</td>
+            </tr>
+         {% endfor %}
+      </table>
+      
+      <a href = "/">Go back to balance page</a>
+      
+   </body>
+</html>
