@@ -1,0 +1,54 @@
+
+
+body { 
+   padding-top: 65px; 
+}
+
+.table_header {
+   font-size: 18px;
+   font-weight: bold;
+}
+
+.table_font {
+   font-size: 18px;
+}
+
+.deletebutton {
+   background-color: #CE2B2B;
+   border: none;
+   color: white;
+   padding: 10px 10px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: 18px;
+   margin: 4px 2px;
+   cursor: pointer;
+}
+
+
+.addbutton {
+   background-color: #2CC51E;
+   border: none;
+   color: white;
+   padding: 10px 10px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: 18px;
+   margin: 4px 2px;
+   cursor: pointer;
+}
+
+.historybutton {
+   background-color: #1c87c9;
+   border: none;
+   color: white;
+   padding: 10px 10px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: 18px;
+   margin: 4px 2px;
+   cursor: pointer;
+}

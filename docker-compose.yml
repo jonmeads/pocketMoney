@@ -1,0 +1,11 @@
+version: '3'
+services:
+
+  pocketmoney:
+    image: docker.io/library/pocketmoney:latest
+    container_name: pocketmoney
+    volumes: 
+      - /home/jon/tmp:/config 
+    ports:
+      - "5050:5050"
+    restart: unless-stopped

@@ -3,7 +3,7 @@ import sqlite3
 from sqlite3 import Error
 
 
-dbfile = 'db/money.db'
+dbfile = '/config/money.db'
 
 
 def createdbIfNotExists():
@@ -34,6 +34,24 @@ def addChild(child, amt, dt):
    cursor.close()
    addData(child, dt, amt, "Seeding Amount")
 
+
+def getSchedules(): 
+   conn = sqlite3.connect(dbfile)
+   conn.row_factory = sqlite3.Row
+   cursor = conn.cursor()
+   cursor.execute("select rowid, * from schedule ORDER BY rowid DESC")
+   rows = cursor.fetchall();
+   cursor.close()
+   return rows 
+
+
+def deleteSchedule(child, rowid):
+   print("deleting schedule record..")
+   conn = sqlite3.connect(dbfile)
+   cursor = conn.cursor()
+   cursor.execute("delete from schedule where child = ? and rowid = ?", (child, rowid))
+   conn.commit()
+   cursor.close()
 
 def deleteAmount(child, rowid):
    print("deleting amount record..")

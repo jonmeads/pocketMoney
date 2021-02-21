@@ -1,0 +1,51 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+
+<div class="container">
+
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+
+  <div class="container">
+
+     <h2>Add Transaction Information for {{ child }}</h2>
+     <p>
+     Remember to add withdrawals as negative
+     </p>
+      
+     <form action = "{{ url_for('money.addRec') }}" method = "POST">
+         <br>
+         <input type = "hidden" name = "child" value = {{ child }} />
+
+         <div class="form-group">
+           <label>Date</label><br>
+           <input type = "date" class="form-control" name = "dt" value = {{ date }} /></br>
+         </div>
+         
+         <div class="form-group">
+           <label>Amount</label><br>
+           <input type = "number" class="form-control"  step="any" name = "amt" /></br>
+         </div>
+         
+         <div class="form-group">
+           <label>Description</label><br>
+           <input type = "text" class="form-control"  name = "desc" /><br>
+         </div>
+         
+         <br>
+         <input type = "submit" class="addbutton" value = "Add Transaction" /><br>
+     </form>
+     <br>
+
+  </div>
+</div>
+{%- endblock %}

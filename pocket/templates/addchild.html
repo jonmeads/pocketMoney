@@ -1,0 +1,43 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+<div class="container">
+
+
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+
+  <div class="container">
+
+      <h2>{{ title }}</h1>
+      <p>
+      Please add a child
+      <br>
+      
+      <form action = "{{ url_for('money.addChildRec') }}" method = "POST">
+         <div class="form-group">
+         <label>Childs Name</label><br>
+         <input type = "text" class="form-control" name = "child" /><br>
+         </div> 
+         
+         <div class="form-group">
+         <label>Starting Amount</label><br>
+         <input type = "number" class="form-control" name = "amt" /></br>
+         </div> 
+         <br> 
+         <input type = "submit" class="addbutton" value = "Add Child" /><br>
+      </form>
+      <br>
+      </p>
+
+  </div>
+</div>
+{%- endblock %}

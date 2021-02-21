@@ -1,0 +1,44 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+
+<div class="container">
+
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+
+  <div class="container">
+
+      <h2>History for {{ child }}</h2>
+   
+      <table class="table">
+         <thead class="table_header">
+            <td>Date</td>
+            <td>Amount</td>
+            <td>Description</td>
+            <td>Delete Link</td>
+         </thead>
+         
+         {% for row in rows %}
+            <tr class="table_font">
+               <td>{{row["date"]}}</td>
+               <td>{{row["amount"]}}</td>
+               <td>{{row["description"]}}</td>
+               <td><a href="{{ url_for('money.deleteAmount', child=row['child'], rowid=row['rowid'])}}" class=deletebutton>Delete Entry</a></td>
+            </tr>
+         {% endfor %}
+      </table>
+      
+  </div>
+</div>
+
+{%- endblock %}
+

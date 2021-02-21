@@ -1,0 +1,44 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+
+<div class="container">
+
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+
+  <div class="container">
+
+      <h1>Pocket Money Tracker</h1>
+      <h2>Pocket money as of: {{ time }}</h2>
+
+      <br>
+
+        {% for row in rows %}
+           <hr>
+           <br>
+           <h1>{{row["child"]}}</h1>
+           <h2>Current Balance: <b>£{{row["balance"]}}</b></h2>
+           <a href = "\add\{{row['child']}}" class="addbutton">Add A New Transaction for {{row["child"]}} </a>
+           <a href = "\history\{{row['child']}}" class="historybutton">Transaction History for {{row["child"]}} </a>
+           <br>
+         {% endfor %}
+
+      <br>
+      <hr>
+
+  </div>
+</div>
+
+{%- endblock %}
+
+
+
