@@ -1,0 +1,21 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Pocket Money Tracker{% endblock %}
+
+{% import "bootstrap/fixes.html" as fixes %}
+
+{% block head %}
+  {{super()}}
+  <link rel="stylesheet" href="../static/style.css/">
+  <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
+  <link rel="apple-touch-icon-precomposed" href="../static/money-bag-152-245511.png">
+  {{fixes.ie8()}}
+{%- endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-fixed-top">
+  <!-- ... -->
+  {{nav.money_top.render()}}
+</div>
+{% endblock %}
+
+

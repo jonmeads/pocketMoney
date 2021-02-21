@@ -1,0 +1,26 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+<div class="container">
+
+
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+
+
+  <div class="jumbotron">
+   
+      result of addition : {{ msg }}
+      <h2><a href = "\">go back to home page</a></h2>
+      
+  </div>
+</div>
+{%- endblock %}
