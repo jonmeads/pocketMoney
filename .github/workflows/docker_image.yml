@@ -21,7 +21,7 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_TOKEN
     - name: build the docker image            
-      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/pocketmoney:$(date +%s)
+      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/pocketmoney:latest
       
     - name: docker push
       run: docker push ${{secrets.DOCKER_USER}}/pocketmoney
