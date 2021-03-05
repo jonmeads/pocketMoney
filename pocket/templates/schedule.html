@@ -28,8 +28,8 @@
          <thead  class="table_header">
             <td>Child</td>
             <td>Amount</td>
+            <td>Description</td>
             <td>Frequency</td>
-            <td>Time</td>
             <td>Delete Schedule</td>
          </thead>
          
@@ -37,14 +37,14 @@
             <tr class="table_font">
                <td>{{row["child"]}}</td>
                <td>{{row["amount"]}}</td>
-               <td>{{row["frequency"]}}</td>
-               <td>{{row["time"]}}</td>
-               <td><a href="{{ url_for('money.deleteSchedule', child=row['child'], rowid=row['rowid'])}}" class=deletebutton>Delete Entry</a></td>
+               <td>{{row["description"]}}</td>
+               <td>{{row["frequency"]}}</td> 
+               <td><a href="{{ url_for('money.deleteSchedule', child=row['child'], desc=row['description'], rowid=row['rowid'])}}" class=deletebutton>Delete Entry</a></td>
             </tr>
          {% endfor %}
       </table>
       
-      <a href = "/" class="addbutton">Add new Schedule</a>
+      <a href = "/addSchedule" class="addbutton">Add new Schedule</a>
       
       </p>
 

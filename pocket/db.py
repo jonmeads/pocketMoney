@@ -4,6 +4,7 @@ from sqlite3 import Error
 
 
 dbfile = '/config/money.db'
+##dbfile = 'money.db'
 
 
 def createdbIfNotExists():
@@ -12,7 +13,7 @@ def createdbIfNotExists():
    cursor = conn.cursor()
    cursor.execute("create table if not exists money(child text, date text, amount numeric, description text)")
    cursor.execute("create table if not exists child(name text)")
-   cursor.execute("create table if not exists schedule(child text, amount numeric, frequency text, day text)")
+   cursor.execute("create table if not exists schedule(child text, amount numeric, description text, frequency text)")
    conn.commit()
    cursor.close()
 
@@ -40,10 +41,17 @@ def getSchedules():
    conn.row_factory = sqlite3.Row
    cursor = conn.cursor()
    cursor.execute("select rowid, * from schedule ORDER BY rowid DESC")
-   rows = cursor.fetchall();
+   rows = cursor.fetchall()
    cursor.close()
    return rows 
 
+def addSchedule(child, amt, desc, frequency):
+   print("adding Schedule..")
+   conn = sqlite3.connect(dbfile)
+   cursor = conn.cursor()
+   cursor.execute("insert into schedule (child, amount, description, frequency) values (?,?,?,?)", (child, amt, desc, frequency))
+   conn.commit()
+   cursor.close()
 
 def deleteSchedule(child, rowid):
    print("deleting schedule record..")
@@ -61,13 +69,21 @@ def deleteAmount(child, rowid):
    conn.commit()
    cursor.close()
    
+def getChildren():
+   conn = sqlite3.connect(dbfile)
+   conn.row_factory = sqlite3.Row
+   cursor = conn.cursor()
+   cursor.execute("select name as child from child order by child")
+   rows = cursor.fetchall()
+   cursor.close()
+   return rows    
 
 def getBalances():
    conn = sqlite3.connect(dbfile)
    conn.row_factory = sqlite3.Row
    cursor = conn.cursor()
    cursor.execute("select child, sum(amount) AS balance from money group by child order by child")
-   rows = cursor.fetchall();
+   rows = cursor.fetchall()
    cursor.close()
    return rows 
 
@@ -76,7 +92,7 @@ def getHistory(child):
    conn.row_factory = sqlite3.Row
    cursor = conn.cursor()
    cursor.execute("select rowid, * from money where child = ? ORDER BY date(date) DESC", ([child]))
-   rows = cursor.fetchall();
+   rows = cursor.fetchall()
    cursor.close()
    return rows 
 

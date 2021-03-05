@@ -4,6 +4,9 @@ from functools import wraps
 from flask import current_app as app
 from flask_nav.elements import Navbar, View, Subgroup, Link, Text, Separator
 import datetime
+from crontab import CronTab
+import getpass
+
 
 from pocket import db as db
 from .nav import nav
@@ -58,17 +61,73 @@ def add(child):
    }
    return render_template('add.html', **templateData)
 
-@money.route('/schedules', methods = ['POST', 'GET'])
+@money.route('/schedules')
 def schedules():
    rows = db.getSchedules()
-   return render_template('schedule.html', rows = rows)
+
+   cron = CronTab(user=getpass.getuser())
+
+   return render_template('schedule.html', rows = rows, cron = cron)
 
 
-@money.route('/deleteSchedule/<child>/<rowid>')
+@money.route('/addSchedule')
+def addSchedule():
+   rows = db.getChildren()
+   return render_template('addSchedule.html', rows = rows)
+
+@money.route('/addScheduleRec', methods = ['POST', 'GET'])
+def addScheduleRec():
+   if request.method == 'POST':
+      try:
+         print("****\n")
+         print(request.form)
+
+         child = request.form['children']
+         amt = request.form['amt']
+         desc = request.form['desc']
+         freq = request.form['freq'] # weekly / monthly
+         freqWeekly = request.form['daily'] # MON - SUN
+         freqMonthly = request.form['monthly'] # 1 - 31
+
+         frequency = ""
+
+         if amt is None:
+             amt = 0
+
+         cron = CronTab(user=getpass.getuser())
+         job = cron.new(command="/payment.sh '" + child + "' " + amt, comment=desc)
+
+         job.minute.on(1)
+         job.hour.on(1)
+
+         if freq == "weekly":
+            job.dow.on(freqWeekly)
+            frequency = "Every week on " + freqWeekly
+
+         if freq == "monthly":   
+            job.setall('1 1 ' + freqMonthly + ' * *')
+            frequency = "On the " + str(freqMonthly) + " day of the month"
+
+         cron.write()
+         db.addSchedule(child, amt, desc, frequency) 
+
+         msg = "successfully added schedule"
+      except Exception as e: 
+         print(e)
+         msg = "error adding schedule"
+      
+      finally:
+         flash(msg)
+         return redirect('/')   
+
+@money.route('/deleteSchedule/<child>/<desc>/<rowid>')
 @requires_auth
-def deleteSchedule(child, rowid):
+def deleteSchedule(child, desc, rowid):
   try:
      print("Deleting schedule record")
+     cron = CronTab(user=getpass.getuser())
+     cron.remove_all(comment=desc)
+     cron.write()
      db.deleteSchedule(child, rowid)
      msg = "Successfully deleted record"
   except Exception as e:

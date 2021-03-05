@@ -1,0 +1,82 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block content %}
+
+<div class="container">
+
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+
+  <div class="container">
+
+     <h2>Add Payment Schedule Information</h2>
+      
+     <form action = "{{ url_for('money.addScheduleRec') }}" method = "POST">
+         <br>
+
+         <div class="form-group">
+           <label for="child-select" class="control-label">Select Child</label><br>
+           <select class="form-control inputstl" name="children" id="child-select">
+              <option value="">--Please choose a child--</option>
+              {% for row in rows %}
+                  <option value="{{row["child"]}}">{{row["child"]}}</option>
+              {% endfor %}
+           </select>
+           </br>
+         </div>
+         
+         <div class="form-group">
+           <label>Amount</label><br>
+           <input type = "number" class="form-control"  step="any" name = "amt" /></br>
+         </div>
+         
+         <div class="form-group">
+           <label>Description</label><br>
+           <input type = "text" class="form-control"  name = "desc" /><br>
+         </div>
+
+         <div class="form-group">
+          <label>Payment Frequency</label><br>
+          <select class="form-control inputstl" name="freq">
+            <option value ="daily">Daily</option>
+            <option value ="weekly">Weekly</option>
+            <option value ="monthly">Monthly</option>
+          </select>
+          <br>
+        </div>
+
+        <div class="form-group">
+          <label>Weekly Payment Day of Week</label><br>
+          <select class="form-control inputstl" name="daily">
+            <option value ="MON">Monday</option>
+            <option value ="TUE">Tuesday</option>
+            <option value ="WED">Wednesday</option>
+            <option value ="THU">Thursday</option>
+            <option value ="FRI">Friday</option>
+            <option value ="SAT">Saturday</option>
+            <option value ="SUN">Sunday</option>
+          </select>
+          <br>
+        </div>
+
+        <div id="month" class="form-group">
+          <label>Monthly Payment Day of Month</label><br>
+          <input type = "number" class="form-control"  step="any" name = "monthly" /></br>
+        </div>
+         
+         <br>
+         <input type = "submit" class="addbutton" value = "Add Payment Schedule" /><br>
+     </form>
+     <br>
+
+  </div>
+</div>
+{%- endblock %}
