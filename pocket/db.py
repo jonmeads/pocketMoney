@@ -4,7 +4,7 @@ from sqlite3 import Error
 
 
 dbfile = '/config/money.db'
-##dbfile = 'money.db'
+# overide this if running locally # dbfile = 'money.db'
 
 
 def createdbIfNotExists():

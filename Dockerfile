@@ -1,7 +1,18 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y cron python3.7 python3-pip
+ARG DEBIAN_FRONTEND=noninteractive
+ARG ARG_TIMEZONE=Europe/London
+ENV ENV_TIMEZONE ${ARG_TIMEZONE}
 
+# install
+RUN apt-get update && apt-get install -y cron python3.7 python3-pip tzdata 
+
+# sync timezone
+RUN echo '$ENV_TIMEZONE' > /etc/timezone \
+    && ln -fsn /usr/share/zoneinfo/$ENV_TIMEZONE /etc/localtime \
+    && dpkg-reconfigure --frontend noninteractive tzdata
+
+# copy application
 COPY ./pocket /pocket
 COPY ./requirements.txt requirements.txt 
 COPY ./.flaskenv .flaskenv

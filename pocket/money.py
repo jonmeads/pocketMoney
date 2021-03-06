@@ -15,7 +15,15 @@ money = Blueprint("money", __name__)
 
 
 def check_auth(username, password):
-    return username == 'admin' and password == '0000'
+   user = os.environ.get('AUTH_USER')
+   if user is None:
+      user = 'admin'       
+
+   passwd = os.environ.get('AUTH_PASS')
+   if passwd is None:
+      passwd = '0000'
+
+   return username == user and password == passwd
 
 
 def authenticate():
@@ -71,6 +79,7 @@ def schedules():
 
 
 @money.route('/addSchedule')
+@requires_auth
 def addSchedule():
    rows = db.getChildren()
    return render_template('addSchedule.html', rows = rows)
@@ -79,7 +88,7 @@ def addSchedule():
 def addScheduleRec():
    if request.method == 'POST':
       try:
-         print("****\n")
+         
          print(request.form)
 
          child = request.form['children']
